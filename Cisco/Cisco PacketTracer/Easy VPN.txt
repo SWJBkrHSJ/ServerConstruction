@@ -1,0 +1,47 @@
+Easy VPN
+시스코에서 제작한 독자적인 기술이다. 복잡한 설정을 해야하는 LAN-to-LAN VPN방식을 Client에서 간단한 사용자 인증만으로 VPN 터널을 구성할 수 있게 해주는 기술이다.
+
+설정 예제
+*Router에서 (기본적으로 전부 연결이 되어있다 가정함 VPN에서 사용하는 IP는 추가로 라우팅을 해줘야 통신이 이루어짐)
+aaa new-model //aaa활성화
+aaa authentication login VPNAUTH group radius local //VPN서버로의 접근을 위해서는 radius 서버를 통해 인증을 거쳐야하며 인증 실패시엔 로컬로 인증 할 수 있게 한다.
+aaa authorization network VPNAUTH local //인증, 인가 방식 사용
+
+crypto isakmp policy 10 //isakmp 정책설정
+ encryption aes 256 //키를 암호화하는 방식을 설정한다.
+ authentication pre-share //인증방식을 pre-share로 사용하도록하는 설정이다
+ group 2 //어떤 방식의 DH알고리즘을 사용할것인지 설정한다. Easy VPN은 group1을 지원하지 않는다.
+
+crypto isakmp client configuration group cisco //권한을 부여할 그룹 지정
+ key ciscogroup //key값을 설정
+ pool VPNCLIENTS //IP를 할당해줄 pool지정
+ netmask 255.255.255.0 //할당하는 IP의 netmask
+
+crypto ipsec transform-set mytrans esp-3des esp-sha-hmac //mytrans라는 이름의 isakmp 암호화 보호정책을 설정
+
+crypto map mymap client authentication list VPNAUTH //클라이언트에서 인증받을때 VPNAUTH 목록을 사용한다.
+crypto map mymap isakmp authorization list VPNAUTH //isakmp정책을 사용할때 VPNAUTH 목록을 사용한다.
+crypto map mymap client configuration address respond //클라이언트에 주소를 응답하게 하는 설정
+crypto map mymap 10 ipsec-isakmp dynamic mymap //동적암호화를 활성화
+
+interface [inteface-number]
+ crypto map mymap //해당 인터페이스에 crypto map을 적용시킨다.
+
+ip local pool VPNCLIENTS [start-IP] [end-IP] //IP를 할당해줄 pool의 이름과 대역을 정해준다.
+
+radius-server host [radius server IP] auth-port 1645 key cisco <- radius에서 설정한 key값
+
+*Radius Server에서
+Client Name : [Router]
+Client IP : [Router의 IP]
+Secret : cisco <- 라우터에서 설정한 key값
+Username : user
+password : pass
+
+*Client에서
+VPN Configuration
+GroupName : group
+GroupKey : ciscogroup
+Host IP : [Router의 IP]
+Username : user
+Password : pass
