@@ -1,0 +1,11 @@
+실행 - regedit
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\Parameters\Type 우클릭 - 수정
+값 데이터(V): NTP - 확인
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\Config\AnnounceFlags 우클릭 - 수정
+값 데이터(V): 5(10진수) - 확인
+HKEY_LOCAL_MACHEIN\SYSTEM\CurrentControlSet\Services\W32Time\Config\LocalClockDispersion 우클릭 - 수정
+값 데이터(V): 0 - 확인
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpServer\Enabled 우클릭 - 수정
+값 데이터(V): 1 - 확인
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient\SpecialPoolInterval 우클릭 - 수정
+값 데이터(V): 3600(10진수) - 확인

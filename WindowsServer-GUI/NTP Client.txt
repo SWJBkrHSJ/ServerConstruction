@@ -1,0 +1,12 @@
+실행 - services.msc
+Windows Time 서비스 우클릭 - 속성
+시작 유형(E): 자동 , 시작(S) - 확인
+cmd 관리자 권한으로 실행
+> w32tm /config /update /syncfromflags:manual /manualpeerlist:"[ntp server]"
+> w32tm /resync /nowait
+
+
+다른 방법
+우측 하단 시계 클릭 - 날짜 및 시간 설정 변경...
+인터넷 시간 탭 - 설정변경(C)...
+서버(E): [ntp server] - 지금 업데이트(U) - 확인
